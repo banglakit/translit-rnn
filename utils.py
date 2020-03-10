@@ -94,7 +94,10 @@ def make_vocabulary_files(data, language, transliteration):
         translit = []
         for ind in range(1,len(raw_native)-1):
             trans_char = toTranslit(raw_native[ind-1], raw_native[ind], raw_native[ind+1], transliteration)
-            translit.append(trans_char[0])
+            try:
+                translit.append(trans_char[0])
+            except IndexError:
+                continue
             native.append(raw_native[ind])
             if len(trans_char) > 1:
                 native.append(u'\u2000')
@@ -160,7 +163,7 @@ def load_language_data(language, is_train = True):
     VALIDATION_DATA_PATH = 'languages/' + language + '/data/val.txt'
     TRAIN_DATA_PATH = 'languages/' + language + '/data/train.txt'
     long_letters = json.loads(codecs.open('languages/' + language + '/long_letters.json','r',encoding='utf-8').read())
-    long_letter_mapping = { long_letters[i] : unichr(ord(u'\u2002') + i) for i in range(len(long_letters)) }
+    long_letter_mapping = { long_letters[i] : chr(ord(u'\u2002') + i) for i in range(len(long_letters)) }
     trans = json.loads(codecs.open('languages/' + language + '/transliteration.json','r',encoding='utf-8').read())
     tmp_trans = trans.copy()
     for c in tmp_trans:
